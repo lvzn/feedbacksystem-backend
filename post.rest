@@ -1,0 +1,7 @@
+POST http://localhost:5000/api
+content-type: application/json
+
+{
+    "feedback1": "2",
+    "feedback2": "4"
+}
