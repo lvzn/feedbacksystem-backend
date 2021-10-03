@@ -2,6 +2,6 @@ POST http://localhost:5000/api
 content-type: application/json
 
 {
-    "feedback1": "2",
-    "feedback2": "4"
+    "overall_feedback": "5",
+    "staff_feedback": "12"
 }

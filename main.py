@@ -1,5 +1,4 @@
 from flask import jsonify, request, Flask
-import datetime
 import pymysql
 import os
 from dotenv import load_dotenv
@@ -18,19 +17,15 @@ app.config["DEBUG"] = True
 @app.route("/api", methods=["POST", "GET"])
 def getFeedback():
     data = request.json
-    saveFeedbackToDatabase()
+    saveFeedbackToDatabase(data)
     return "OK"
 
-
-def saveFeedbackToDatabase():
-    connection = pymysql.connect(host=url, user=username, passwd=password)
+def saveFeedbackToDatabase(data):
+    connection = pymysql.connect(host=url, user=username, passwd=password, database="dev_feedback")
 
     with connection:
-        with connection.cursor(DictCursor) as cursor:
-            cursor.execute("show databases")
-            available_dbs = cursor.fetchall()
-
-            print(available_dbs)
-
+        with connection.cursor(DictCursor) as cursor:              
+            cursor.execute('insert into reviews (r1, r2, submitdate) values (%s, %s, curdate())', (data["overall_feedback"], data["staff_feedback"]))
+            cursor.execute("commit")
 
 app.run()
