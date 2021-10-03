@@ -1,26 +1,36 @@
+from flask import jsonify, request, Flask
+import datetime
+import pymysql
+import os
 from dotenv import load_dotenv
+from pymysql.cursors import DictCursor
 load_dotenv('./.env')
 
-import os
-from logging import debug
-from flask import Flask
-from flask import jsonify,request
-import pymysql
-import datetime
-url = os.getenv('DBURL')
-username = os.getenv('USER')
-password = os.getenv('PASSWORD')
-con = pymysql.connect(host=url, user=username, password=password)
+url = os.getenv('DB_URL')
+username = os.getenv('DB_USER')
+password = os.getenv('DB_PASSWORD')
+
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
 
+
 @app.route("/api", methods=["POST", "GET"])
 def getFeedback():
     data = request.json
-    print(os.getenv('DBURL'))
-    return data
+    saveFeedbackToDatabase()
+    return "OK"
+
+
 def saveFeedbackToDatabase():
-    print(os.environ["DBURL"])
+    connection = pymysql.connect(host=url, user=username, passwd=password)
+
+    with connection:
+        with connection.cursor(DictCursor) as cursor:
+            cursor.execute("show databases")
+            available_dbs = cursor.fetchall()
+
+            print(available_dbs)
+
 
 app.run()
